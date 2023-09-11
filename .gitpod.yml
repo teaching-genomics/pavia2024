@@ -1,16 +1,10 @@
 image: gitpod/workspace-base
 
 tasks:
-- name: install mamba
+- name: install gfastats
   command: |
-    curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
-    bash Mambaforge-$(uname)-$(uname -m).sh -b -p /workspace/conda && rm Mambaforge-$(uname)-$(uname -m).sh
-    /workspace/conda/bin/mamba init bash
-
-    source ${HOME}/.bashrc
-
-vscode:
-  extensions:
-    - anwar.papyrus-pdf
+    cd /workspace
+    wget https://github.com/vgl-hub/gfastats/releases/download/v1.3.6/gfastats.v1.3.6-linux.zip
+    unzip gfastats.v1.3.6-linux.zip
 
 workspaceLocation: "/workspace"
