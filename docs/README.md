@@ -19,6 +19,10 @@ By the end of this session you will be able to:
 3. Compute QV estimates using kreeq
 4. Evaluate genome assemblies at scale using Buttercup
 
+## Slides
+
+[Click here to see slides](https://slides.google.com)
+
 ## Prerequisites
 
 1. Understanding basic terms in genome assembly, such as reads, contigs, scaffolds, ...
