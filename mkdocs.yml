@@ -3,6 +3,7 @@ edit_uri: https://github.com/bgacademy23/gfastar/blob/main/docs
 
 nav:
     - Home: README.md
+    - Session Tutorial: tutorial.md
     - BGA23: https://bga23.org
 
 theme:
