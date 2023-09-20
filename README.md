@@ -35,7 +35,3 @@ By the end of this session you will be able to:
     
     If you don't meet the prerequisites or change your mind based on the description or are no longer available at the session time, please email tol-training at sanger.ac.uk to cancel your slot so that someone else on the waitlist might attend.
 
-## Training material
-
-Gfastats examples can be found [here](https://github.com/BGAcademy23/gfastar/docs/gfastats.md).
-Kreeq examples can be found [here](https://github.com/BGAcademy23/gfastar/docs/kreeq.md).

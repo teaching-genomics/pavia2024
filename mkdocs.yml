@@ -3,8 +3,9 @@ edit_uri: https://github.com/bgacademy23/gfastar/blob/main/docs
 
 nav:
     - Home: README.md
+    - gfastats: gfastats.md
+    - kreeq: kreeq.md
     - BGA23: https://bga23.org
-
 theme:
     name: material
     language: en
