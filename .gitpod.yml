@@ -4,9 +4,20 @@ tasks:
 - name: install gfastats
   command: |
     cd /workspace
+    #gfastats
     wget https://github.com/vgl-hub/gfastats/releases/download/v1.3.6/gfastats.v1.3.6-linux.zip
     unzip gfastats.v1.3.6-linux.zip
     chmod a+x ./gfastats
+    #rdeval
+    wget https://github.com/vgl-hub/rdeval/releases/download/v0.0.1/rdeval.v0.0.1-linux.zip
+    unzip rdeval.v0.0.1-linux.zip
+    chmod a+x ./rdeval
+    #kreeq
+    wget https://github.com/vgl-hub/kreeq/releases/download/v0.0.1/kreeq.v0.0.1-linux.zip
+    unzip kreeq.v0.0.1-linux.zip
+    chmod a+x ./kreeq
     export PATH=/workspace:$PATH
+    #large data
+    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/large_input.fasta.gz
 
 workspaceLocation: "/workspace"
