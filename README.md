@@ -10,6 +10,9 @@ Research Assistant Professor, The Rockefeller University
 Cassidy Johnson  
 Graduate Fellow, The Rockefeller University
 
+Jack Medico
+Graduate Fellow, The Rockefeller University
+
 ## Description
 
 By the end of this session you will be able to:
@@ -31,3 +34,8 @@ By the end of this session you will be able to:
     Please also read the description carefully to see if this session is relevant to you.
     
     If you don't meet the prerequisites or change your mind based on the description or are no longer available at the session time, please email tol-training at sanger.ac.uk to cancel your slot so that someone else on the waitlist might attend.
+
+## Training material
+
+Gfastats examples can be found [here](https://github.com/BGAcademy23/gfastar/docs/gfastats.md).
+Kreeq examples can be found [here](https://github.com/BGAcademy23/gfastar/docs/kreeq.md).
