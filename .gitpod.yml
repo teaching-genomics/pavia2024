@@ -19,7 +19,7 @@ tasks:
     export PATH=/workspace:$PATH
     #large data
     wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/large_input.fasta.gz
-    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/pacbiohifi_read_kreeq.fastq
-    wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/008/822/105/GCA_008822105.2_bTaeGut2.pat.W.v2/GCA_008822105.2_bTaeGut2.pat.W.v2_genomic.fna.gz
+    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/filtered.fastq
+    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/input.fa
 
 workspaceLocation: "/workspace"
