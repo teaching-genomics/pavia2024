@@ -20,6 +20,7 @@ tasks:
     #large data
     wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/large_input.fasta.gz
     wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/filtered.fastq
+    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/filtered2.fastq
     wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/input.fa
 
 workspaceLocation: "/workspace"
