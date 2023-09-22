@@ -5,6 +5,7 @@ nav:
     - Home: README.md
     - gfastats: gfastats.md
     - kreeq: kreeq.md
+    - rdeval: rdeval.md
     - BGA23: https://bga23.org
 theme:
     name: material
