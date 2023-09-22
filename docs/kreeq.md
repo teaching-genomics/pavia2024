@@ -4,7 +4,7 @@ kreeq validate -f input.[fasta|fastq][.gz] -r reads1.fastq[.gz] reads2.fastq[.gz
 ```
 
 It accepts multiple read files as input, separated by space. The two modes we will be using today are `validate` and `union`.
-To check out all options and flags use: 
+To check out all options and flags use:
 ```
 kreeq -h
 kreeq validate -h
@@ -26,7 +26,7 @@ Importantly, the kreeq database can only be computed once on the read set, and r
 
 ```
 kreeq validate -r random1.fastq -o random1.kreeq
-kreeq validate -f random1.fasta -d random1.kreeq
+kreeq validate -f random1.fasta -d random_fa.kreeq
 ```
 
 Similarly, kreeq databases can be generated separately for multiple inputs and combined, with increased performance in HPC environments:
@@ -41,7 +41,7 @@ kreeq validate -f random1.fasta -d union.kreeq
 
 Now working with real sequencing data:
 
-Let's start by running `gfastats` to get a sense of what we are evaluating.
+Let's start by running `gfastats` to get a sense of what we are evaluating:
 ```
 gfastats input.fa
 ```
@@ -54,5 +54,4 @@ kreeq validate -r filtered2.fastq -o filtered2.kreeq
 kreeq union -d filtered.kreeq filtered2.kreeq -o filtered_union.kreeq
 
 kreeq validate -f input.fa -d filtered_union.kreeq
-```
 ```
