@@ -54,4 +54,3 @@ kreeq validate -r filtered2.fastq -o filtered2.kreeq
 kreeq union -d filtered.kreeq filtered2.kreeq -o filtered_union.kreeq
 
 kreeq validate -f input.fa -d filtered_union.kreeq
-```
