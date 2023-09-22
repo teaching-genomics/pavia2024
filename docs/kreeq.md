@@ -6,7 +6,9 @@ mv testFiles-kreeq/* .
 kreeq validate -f input.[fasta|fastq][.gz] -r reads1.fastq[.gz] reads2.fastq[.gz] [...] [-k 21]
 ```
 
-It accepts multiple read files as input, separated by space. To check out all options and flags use `kreeq -h`.
+It accepts multiple read files as input, separated by space. To check out all options and flags use: 
+
+`kreeq -h`
 
 You can test some typical usage with the files in the `testFiles` folder, e.g.:
 
