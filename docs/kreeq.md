@@ -8,7 +8,7 @@ To check out all options and flags use:
 kreeq -h
 kreeq validate -h
 kreeq union -h
-```
+```  
 
 Let's get some test files first:
 ```
