@@ -1,6 +1,6 @@
 Let's get some test files first:
 ```
-mv testFiles-gfastats/* .
+mv gfastar/docs/testFiles-gfastats/* .
 ```
 Help:
 ```
@@ -85,7 +85,7 @@ gfastats random1.fasta -ofa --sort largest
 gfastats random1.fasta -ofa --sort descending
 ```
 ```
-gfastats random1.fasta -ofa --sort test.sort
+gfastats random1.fasta -ofa --sort random1.sort
 ```
 GFA2:
 ```

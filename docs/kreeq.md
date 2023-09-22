@@ -1,6 +1,6 @@
 Let's get some test files first:
 ```
-mv testFiles-kreeq/* .
+mv gfastar/docs/testFiles-kreeq/* .
 ```
 ```
 kreeq validate -f input.[fasta|fastq][.gz] -r reads1.fastq[.gz] reads2.fastq[.gz] [...] [-k 21]
