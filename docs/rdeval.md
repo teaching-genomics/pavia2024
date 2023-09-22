@@ -1,5 +1,5 @@
 The standard notation of rdeval is:
-```
+``` 
 rdeval input.[fasta|fastq|gfa][.gz] [expected genome size]
 ```
 
