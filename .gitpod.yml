@@ -1,26 +1,51 @@
 image: gitpod/workspace-base
 
 tasks:
-- name: install gfastats
+- name: practical pavia course
   command: |
     cd /workspace
-    #gfastats
-    wget https://github.com/vgl-hub/gfastats/releases/download/v1.3.6/gfastats.v1.3.6-linux.zip
-    unzip gfastats.v1.3.6-linux.zip
-    chmod a+x ./gfastats
-    #rdeval
-    wget https://github.com/vgl-hub/rdeval/releases/download/v0.0.1/rdeval.v0.0.1-linux.zip
-    unzip rdeval.v0.0.1-linux.zip
-    chmod a+x ./rdeval
-    #kreeq
-    wget https://github.com/vgl-hub/kreeq/releases/download/v0.0.1/kreeq.v0.0.1-linux.zip
-    unzip kreeq.v0.0.1-linux.zip
-    chmod a+x ./kreeq
-    export PATH=/workspace:$PATH
-    #large data
-    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/large_input.fasta.gz
-    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/filtered.fastq
-    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/filtered2.fastq
-    wget https://genomeark.s3.amazonaws.com/trainingmaterials/BGA2023/input.fa
+    #retrieve E. coli reference genome
+    wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
+    #unzip the genome and rename it for brevity
+    gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
+    mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
+    #install programs needed 
+    mkdir bin
+    cd /bin
+    #bowtie-2
+    wget https://netcologne.dl.sourceforge.net/project/bowtie-bio/bowtie2/2.5.3/bowtie2-2.5.3-sra-linux-x86_64.zip
+    unzip bowtie2-2.5.3-sra-linux-x86_64.zip
+    #sra-toolkit
+    wget --output-document sratoolkit.tar.gz https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+    tar -vxzf sratoolkit.tar.gz
+    #fastqc
+    wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.12.1.zip
+    unzip fastqc_v0.12.1.zip
+    #htslib
+    wget https://github.com/samtools/htslib/releases/download/1.19.1/htslib-1.19.1.tar.bz2
+    tar -xf htslib-1.19.1.tar.bz2    
+    cd  htslib-1.19.1
+    ./configure --prefix=.
+    make
+    make install
+    #samtools
+    wget https://github.com/samtools/samtools/releases/download/1.19.2/samtools-1.19.2.tar.bz2
+    tar -xf samtools-1.19.2.tar.bz2
+    cd samtools-1.19.2
+    ./configure --prefix=.
+    make
+    make install
+    #bcftools
+    wget https://github.com/samtools/bcftools/releases/download/1.19/bcftools-1.19.tar.bz2
+    tar -xf bcftools-1.19.tar.bz2
+    cd bcftools-1.19.tar.bz2
+    ./configure --prefix=.
+    make
+    make install
+    #freebayes
+    wget https://github.com/freebayes/freebayes/releases/download/v1.3.6/freebayes-1.3.6-linux-amd64-static.gz
+    chmod 774 freebayes-1.3.6-linux-amd64-static
+    mv freebayes-1.3.6-linux-amd64-static freebayes
+    export PATH=/workspace/bin:$PATH
 
 workspaceLocation: "/workspace"
