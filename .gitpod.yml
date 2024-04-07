@@ -1,14 +1,9 @@
 image: gitpod/workspace-base
 
 tasks:
-- name: practical pavia course
+- name: Day1
   command: |
     cd /workspace
-    #retrieve E. coli reference genome
-    wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
-    #unzip the genome and rename it for brevity
-    gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
-    mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
     #install programs needed 
     mkdir bin
     cd /bin
