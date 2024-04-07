@@ -54,6 +54,30 @@ conda install -c bioconda fastqc
 fastqc -h | less
 ```
 
+###install samtools
+Let's install the software samtools
+```
+conda install -c bioconda "samtools>=1.10"
+```
+
+###install freebayes
+Let's install the freebayes variant caller
+```
+conda install bioconda::freebayes
+```
+
+###Let's install vcftools and bcftools, both very useful and fast programs for handling vcf files
+```
+conda install -c bioconda vcftools bcftools
+```
+
+###Let's install rasusa tool (https://github.com/mbhall88/rasusa)
+```
+conda install -c bioconda rasusa
+```
+
+
+
 ## Reference genome
 1. go to https://www.ncbi.nlm.nih.gov/
 2. search for 'e coli' (without quotes) 
@@ -115,10 +139,6 @@ Then we can align the reads:
 ```
 bowtie2 -x ecoli -1 SRR10428014_1.fastq -2 SRR10428014_2.fastq -p 4 > alignment.sam
 ```
-Now we can look at the alignments, for this we need the software samtools:
-```
-conda install -c bioconda "samtools>=1.10"
-```
 Now let's convert our alignment into a format that IGV can read (bam):
 ```
 samtools view -b alignment.sam > alignment.bam
@@ -135,141 +155,61 @@ Let's also index the reference fasta file using samtools, so that the fasta can 
 ```
 samtools faidx e_coli.fasta
 ```
-Let's download IGV viewer to look inside the alignment https://software.broadinstitute.org/software/igv/download (download the version with java included; choose a version appropriate for you pc, we are going to use the software locally, without emulator)
+Let's download IGV viewer to look inside the alignment https://software.broadinstitute.org/software/igv/download (download the version with java included; choose a version appropriate for your OS)
 There is also an online version in case you don't want to download it locally (https://igv.org/app/)
-Run IGV and load the files to inspect them as it was shown during the lesson. You can also load the genome annotation as an additional track in the GFF format (available here https://www.ncbi.nlm.nih.gov/genome/?term=e%20coli)
+Run IGV and load the files to inspect them. You can also load the genome annotation as an additional track in the GFF format (available here https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/)
+
+
 
 ## Variant calling
-
-
-## Blast
-
-
-
-
-
-   
-#PERFORM VARIANT CALLING with freebayes software
-
-#download freebayes binary (https://github.com/freebayes/freebayes)
-
-#click the "Releases" section, to the right
-
-#download the executable binary v1.3.6 (the latest)
-
-#click with the right mouse on the linux version, and download the static binary file freebayes-1.3.6-linux-amd64-static.gz. Move it in your working directory.
-
-#unzip binary file 
-
-gunzip freebayes-1.3.6-linux-amd64-static.gz
-
-#make the binary executable
-
-chmod 555 freebayes-1.3.6-linux-amd64-static
-
-#change binary name to make it easier to recall
-
-mv freebayes-1.3.6-linux-amd64-static freebayes
-
-#if renaming it gives you exec errors, keep the file name as it is.
-##for mac users: the linux version will not work. In that case try to use conda to install freebayes (conda install -c bioconda freebayes)
-
-#check it works by opening the help page
-
-./freebayes -h        #this command has to be run from the directory where the binary file is. Otherwise you'll have to provide the path to where the binary is located to run it from another location.
-
-#(if you didn't rename the freebayes file you have to use the actual name of your binary)
-
-
-#let's perform the variant calling using the alignment generated before
+Let's check freebayes works by opening the help page
+```
+./freebayes -h
+```
+Let's perform the variant calling using the alignment generated before
+```
 ./freebayes -f e_coli.fasta -p 1 sorted_alignment.bam > var.vcf
+```
+Now that you have the variant calling file from your alignment, you can try to visualize it in IGV by loading it as you did before for the alignment file.
 
-#Now that you have the variant calling file from your alignment, you can try to visualize it in IGV by loading it as you did before for the alignment file.
 
-#Now let's learn how to explore and manipulate a vcf file using the command line
-
-#Let's install vcftools and bcftools, both very useful and fast programs for handling vcf files
-
-conda install -c bioconda vcftools
-
-#Install bcftools
-
-conda install -c bioconda bcftools
-
-##################################################################################
-####THIS PART WAS NOT DONE DURING THE PRACTICAL LESSON
-#Let's analyze our vcf file
-#Let's visualize the header of the file and learn some useful commands
-
-bcftools view -h var.vcf  #shows header; the header contains information on what has been done to the vcf
-
+##Now let's learn how to explore a vcf file using the command line
+Let's visualize the header of the file and learn some useful commands
+This command shows the file header; the header contains information on what has been done to the vcf
+```
+bcftools view -h var.vcf  
 bcftools view -h var.vcf | tail     #to visualize the last ten lines 
-
 bcftools view -h var.vcf | tail -1  #last line of the header. This last line is particularly important as it shows what each field in the main body of the vcf is and it also gives the individual names. Do you remember what information is given in the different fields?
-
-#To visualize all variant calls
-
-bcftools view -H var.vcf   #outputs every raw call
-
+bcftools view -H var.vcf   #to output every raw call
 bcftools view -H var.vcf | head     #to visualize the first ten lines  
-
 bcftools view -H var.vcf | head -1   # just the first site present in the file
-
-
-#We can index our vcf to make it more accessible. But we need to compress it first
-
+```
+We can index our vcf to make it more accessible. But we need to compress it first
+```
 bgzip var.vcf
-
-#Index the vcf
-
 bcftools index var.vcf.gz
+```
 
-#Let's look at the first site in detail, extracting in particular the first seven columns:
-bcftools view var.vcf.gz | grep -m 1 -A 1 "#CHROM" | cut -f 1-7     #what information do we have here?
-
-#now let's extract the info field for the first site in our vcf 
-bcftools view -H var.vcf.gz | head -1 | cut -f 8
-
-# What do these parameters mean? The header of the file defines every field present in the vcf. So let's grep the information from the header.
-bcftools view -h var.vcf.gz | grep "INFO"
-
-#Now let's explore the genotype information (present in the format field): what are the fields present in this section?
-
-bcftools view -H var.vcf.gz | head -1 | cut -f 9 
-
-# What do they refer to? Let's grep the information from the header like before.
-
-bcftools view -h var.vcf.gz | grep "##FORMAT"
-
-#Let's take a look at the first genotype call as an example:
-
-bcftools view -H var.vcf.gz | head -1 | cut -f 10
-
-#For another more synthetic way to look at the genotypes in our vcf, we can use the bcftools query utility, a very powerful and a useful tool:
-
-bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' var.vcf.gz | head
-
-#How many unfiltered variants are there in our vcf file?
-
-bcftools view -H var.vcf.gz | wc -l   #counts the lines referring to the genetic variants, excluding the header (remember the vcf has one variant per line, excluding the header)
+#Let's dive more into the vcf fields 
+```
+bcftools view var.vcf.gz | grep -m 1 -A 1 "#CHROM" | cut -f 1-7     #to extract the first seven columns: what information do we have here?
+bcftools view -H var.vcf.gz | head -1 | cut -f 8 #now let's extract the info field for the first site in our vcf
+bcftools view -h var.vcf.gz | grep "INFO" # What do these parameters mean? The header of the file defines every field present in the vcf. So let's grep the information from the header.
+bcftools view -H var.vcf.gz | head -1 | cut -f 9 #Now let's explore the genotype information (present in the format field): what are the fields present in this section?
+bcftools view -h var.vcf.gz | grep "##FORMAT" # What do they refer to? Let's grep the information from the header like before.
+bcftools view -H var.vcf.gz | head -1 | cut -f 10 #Let's take a look at the first genotype call as an example:
+bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' var.vcf.gz | head #For another more synthetic way to look at the genotypes in our vcf, we can use the bcftools query utility, a very powerful and a useful tool:
+bcftools view -H var.vcf.gz | wc -l   #How many variants are there? This command counts the lines referring to the genetic variants, excluding the header (remember the vcf has one variant per line, excluding the header)
+```
 
 #Now let's try to calculate some vcf file statistics with vcftools
-#Calculate mean depth of coverage per individual (in this case we only have 1)
+```
+vcftools --gzvcf var.vcf.gz --depth #Calculate mean depth of coverage per individual (in this case we only have 1)
+vcftools --gzvcf var.vcf.gz --site-quality #Calculate quality for each site
+vcftools --gzvcf var.vcf.gz --minQ 30 --minDP 10 --maxDP 50 --recode --out var_filtered #Let's try to filter our variants for quality and min and max individual depth 
+bcftools view -H var_filtered.recode.vcf | wc -l #How many variants do we have left after filtering? Have we somehow filtered our dataset?
+```
 
-vcftools --gzvcf var.vcf.gz --depth
-
-#Calculate quality for each site
-
-vcftools --gzvcf var.vcf.gz --site-quality
-
-#Let's try to filter our variants for quality and min and max individual depth 
-
-vcftools --gzvcf var.vcf.gz --minQ 30 --minDP 10 --maxDP 50 --recode --out var_filtered
-
-#How many variants do we have left after filtering? Have we somehow filtered our dataset?
-
-bcftools view -H var_filtered.recode.vcf | wc -l
-##################################################################################
 
 
 
@@ -292,9 +232,6 @@ pbmm2 align e_coli.fasta SRR11434954.sample.fastq.gz sampleHifi.bam --sort --log
 
 
 #Now we will try to make a de novo assembly using our HiFi dataset. First, we will have to downsample our dataset to make the operation computationally feasible for use. We will use rasusa, a tool specifically designed to randomly subsample long-reads data
-#download rasusa tool (https://github.com/mbhall88/rasusa)
-
-conda install -c bioconda rasusa
 
 
 #subsample to 20x coverage
