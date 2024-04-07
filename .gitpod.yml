@@ -3,7 +3,8 @@ image: gitpod/workspace-base
 tasks:
 - name: Day1
   command: |
+    chmod 755 workspace/pavia2024/bin/*    
     cd /workspace
-    export PATH=/workspace/bin:$PATH
+    export PATH=/workspace/pavia2024/bin:$PATH
 
 workspaceLocation: "/workspace"
