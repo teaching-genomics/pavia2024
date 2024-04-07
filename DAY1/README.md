@@ -19,17 +19,17 @@ Let's install miniconda:
 3. download the appropriate installer (also directly from this page https://docs.conda.io/en/latest/miniconda.html)
 4. select the appropriate CPU architecture (32/64 bit), if you are unsure you can check out this page https://www.computerhope.com/issues/ch001121.htm
 5. once the download is completed, move the installer in your workspace (the location of downloaded files may vary!):
-'''
+```
 mv ../../Downloads/Miniconda3-latest-MacOSX-x86_64.sh .
-'''
+```
 6. install conda
-'''
+```
 sh Miniconda3-latest-MacOSX-x86_64.sh
-'''
+```
 7. accept license with 'yes'. You can use the default install location in the prompt. At the end of the installation process, close the terminal and open a new window, check that conda is working
-'''
+```
 conda
-''' 
+``` 
 
 #### Note 
 most new computers will be 64! For Mac make sure you pick the right installer, ending with 'bash' (e.g. Miniconda3 MacOSX 64-bit bash)
@@ -37,22 +37,22 @@ most new computers will be 64! For Mac make sure you pick the right installer, e
 
 ### Install bowtie2
 Let's install a NGS read aligner (bowtie2), check out this webpage https://anaconda.org/bioconda/bowtie2
-'''
+```
 conda install -c bioconda bowtie2
-'''
+```
 
 ### Install sra-tools
 Let's install the dedicated tool from NCBI-SRA for downloading data
-'''
+```
 conda install -c bioconda sra-tools=3.0
-'''
+```
 
 ###install fastqc
 Install and check it works by exploring the help page:
-'''
+```
 conda install -c bioconda fastqc
 fastqc -h | less
-'''
+```
 
 ## Reference genome
 1. go to https://www.ncbi.nlm.nih.gov/
@@ -64,75 +64,77 @@ fastqc -h | less
 7. create a working directory on your desktop and place the downloaded file in the folder. You can do so using the GUI or with the terminal (see below)
 
 Retrieve E. coli reference genome
-'''
+```
 wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
-'''
+```
 
 ## Gunzip the genome and rename it for brevity
+```
 gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
 mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
+```
 
 ## Genome assembly
 
 
 ## Alignment
 now let's download the reads:
-'''
+```
 fasterq-dump SRR10428014
-'''
+```
 fasterq-dump is a tool to download seequences from NCBI-SRA. Sometimes it gives errors of connection.
 Let's explore the fastq format. How can we visualize the first reads:
-'''
+```
 cat SRR10428014_1.fastq | head -4
-'''
+```
 How many reads do we have in total? Let's count the number of lines 
-'''
+```
 cat SRR10428014_1.fastq | wc -l
-'''
+```
 Output example: 5270084
 And divide by four:
-'''
+```
 echo $(( 5270084 / 4 ))
-'''
+```
 We will assess raw read quality using 'rdeval' and 'fastqc', a very useful software to analyse raw data.
 First make a folder in your working directory for quality control outputting
-'''
+```
 mkdir QC
-'''
+```
 Run fastqc on fastq files and output the result in the proper QC folder (it shouldn't take long):
-'''
+```
 fastqc SRR10428014_1.fastq -o QC
 fastqc SRR10428014_2.fastq -o QC
-'''
+```
 To analyze fastqc output, open the html file and try to interpret the results according to what you learned during the theoretical lessons about NGS. Are your data of enough good quality to proceed with the analysis?
 And now let's align the reads to our reference. First we need to index the reference to make it faster to access:
-'''
+```
 bowtie2-build e_coli.fasta ecoli
-'''
+```
 Then we can align the reads:
-'''
+```
 bowtie2 -x ecoli -1 SRR10428014_1.fastq -2 SRR10428014_2.fastq -p 4 > alignment.sam
-'''
+```
 Now we can look at the alignments, for this we need the software samtools:
-'''
+```
 conda install -c bioconda "samtools>=1.10"
-'''
+```
 Now let's convert our alignment into a format that IGV can read (bam):
-'''
+```
 samtools view -b alignment.sam > alignment.bam
-'''
+```
 Let's sort by coordinate
-'''
+```
 samtools sort alignment.bam -o sorted_alignment.bam -@ 4
-'''
+```
 Let's generate the index for this file
-'''
+```
 samtools index sorted_alignment.bam
-'''
+```
 Let's also index the reference fasta file using samtools, so that the fasta can be loaded in IGV, with the command samtools faidx
-'''
+```
 samtools faidx e_coli.fasta
-'''
+```
 Let's download IGV viewer to look inside the alignment https://software.broadinstitute.org/software/igv/download (download the version with java included; choose a version appropriate for you pc, we are going to use the software locally, without emulator)
 There is also an online version in case you don't want to download it locally (https://igv.org/app/)
 Run IGV and load the files to inspect them as it was shown during the lesson. You can also load the genome annotation as an additional track in the GFF format (available here https://www.ncbi.nlm.nih.gov/genome/?term=e%20coli)
