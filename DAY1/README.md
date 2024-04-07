@@ -3,7 +3,7 @@
 
 ## Instructors
 
-Giulio Formenti  
+Giulio Formenti
 Research Assistant Professor, The Rockefeller University
 
 Guido Gallo
@@ -14,11 +14,11 @@ PostDoctoral researcher, University of Milan
 ### Install needed software 
 
 Let's install miniconda: 
-1.go to https://docs.conda.io/projects/conda/en/latest/user-guide/install/
-2.under regular installation, choose your operating system (Mac, Linux)
-3.download the appropriate installer (also directly from this page https://docs.conda.io/en/latest/miniconda.html)
-4.select the appropriate CPU architecture (32/64 bit), if you are unsure you can check out this page https://www.computerhope.com/issues/ch001121.htm
-5.once the download is completed, move the installer in your workspace (again, the location of downloaded files may vary!):
+1. go to https://docs.conda.io/projects/conda/en/latest/user-guide/install/
+2. under regular installation, choose your operating system (Mac, Linux)
+3. download the appropriate installer (also directly from this page https://docs.conda.io/en/latest/miniconda.html)
+4. select the appropriate CPU architecture (32/64 bit), if you are unsure you can check out this page https://www.computerhope.com/issues/ch001121.htm
+5. once the download is completed, move the installer in your workspace (again, the location of downloaded files may vary!):
 '''
 mv ../../Downloads/Miniconda3-latest-MacOSX-x86_64.sh .
 '''
