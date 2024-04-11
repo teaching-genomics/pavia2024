@@ -108,7 +108,8 @@ mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
 
 
 ## Alignment
-now let's download some short reads to align to the reference genome we just downloaded:
+Now let's download some short reads to align to the reference genome we just downloaded
+The idea is that everyone should pick a different sample
 ```
 fasterq-dump SRR10428014
 ```
@@ -135,7 +136,8 @@ rdeval SRR10428014_2.fastq 4641652   #the command needs the genome size in bp
 Anayze the output trying to interpret the results according to what you learned during the theoretical lessons about NGS. 
 And now let's align the reads to our reference. First we need to index the reference to make it faster to access:
 ```
-bowtie2-build e_coli.fasta ecoli
+bowtie2-build e_coli.fasta ecoli  #The command should print many lines of output then quit. When the command completes, the current directory will contain four new files that all start with 'ecoli' and end with .1.bt2, .2.bt2, .3.bt2, .4.bt2, .rev.1.bt2, and .rev.2.bt2. These files constitute the index - you're done!
+
 ```
 Then we can align the reads:
 ```
@@ -152,7 +154,9 @@ samtools sort alignment.bam -o sorted_alignment.bam -@ 4
 Let's generate the index for this file
 ```
 samtools index sorted_alignment.bam
+rm alignment.sam # we don't need the sam anymore
 ```
+
 Let's also index the reference fasta file using samtools, so that the fasta can be loaded in IGV, with the command samtools faidx
 ```
 samtools faidx e_coli.fasta
@@ -193,7 +197,7 @@ bgzip var.vcf
 bcftools index var.vcf.gz
 ```
 
-## Let's dive more into the vcf fields 
+Let's dive more into the vcf fields 
 ```
 bcftools view var.vcf.gz | grep -m 1 -A 1 "#CHROM" | cut -f 1-7     #to extract the first seven columns: what information do we have here?
 bcftools view -H var.vcf.gz | head -1 | cut -f 8 #now let's extract the info field for the first site in our vcf
@@ -205,7 +209,7 @@ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' var.vcf.gz | head #For ano
 bcftools view -H var.vcf.gz | wc -l   #How many variants are there? This command counts the lines referring to the genetic variants, excluding the header (remember the vcf has one variant per line, excluding the header)
 ```
 
-## Now let's try to calculate some vcf file statistics with vcftools
+Now let's try to calculate some vcf file statistics with vcftools
 ```
 vcftools --gzvcf var.vcf.gz --depth #Calculate mean depth of coverage per individual (in this case we only have 1)
 vcftools --gzvcf var.vcf.gz --site-quality #Calculate quality for each site
@@ -213,68 +217,70 @@ vcftools --gzvcf var.vcf.gz --minQ 30 --minDP 10 --maxDP 50 --recode --out var_f
 bcftools view -H var_filtered.recode.vcf | wc -l #How many variants do we have left after filtering? Have we somehow filtered our dataset?
 ```
 
+# Optional: PCA using a vcf from different E. coli samples 
+The idea is that everyone sends us their vcf files, so we can merge them in a population vcf file and then we can show you how a PCA can be performed
+```
+plink --vcf joint.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out ecoli_pop
+```
+For plotting, we'll have to switch to R studio...
 
-
-# HiFi dataset
+# HiFi dataset (alignment)
 Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) in our gitpod workspace
-
-
-# Align Hifi reads to our reference (e_coli.fasta)
-
+Align Hifi reads to our reference (e_coli.fasta)
+```
 minimap2 -ax map-hifi e_coli.fasta ccs.fq.gz > hifi_alignment.sam 
+```
+Convert to bam
+```
+samtools view -b hifi_alignment.sam > hifi_alignment.bam 
+```
+Sort and index the alignment
+```
+samtools sort hifi_alignment.bam -o sorted_hifi_alignment.bam -@ 4
+samtools index sorted_hifi_alignment.bam
+rm hifi_alignment.sam # we don't need the sam anymore
+```
+Now Try to load this HiFi alignment on IGV as you did before and compare it with the alignment previously made with the Illumina dataset. What are the main differences? 
 
-# Try to load this HiFi alignment on IGV and compare it with the alignment previously made with the Illumina dataset. What are the main differences? 
 
-
-
-
-#Now we will try to make a de novo assembly using our HiFi dataset. First, we will have to downsample our dataset to make the operation computationally feasible for use. We will use rasusa, a tool specifically designed to randomly subsample long-reads data
-
-
-#subsample to 20x coverage
+# HiFi dataset (genome assembly)
+Now we will try to make a de novo assembly using our HiFi dataset. First, we will have to downsample our dataset to make the operation computationally feasible for use. We will use rasusa, a tool specifically designed to randomly subsample long-reads data
+Subsample to 20x coverage
+```
 rasusa --coverage 20 --genome-size 4641652b --input SRR11434954.sample.fastq.gz -o 20x_SRR11434954.sample.fastq.gz 
-
-
-#perform de novo assembly using our downsampled dataset (it will take few minutes)
+```
+Perform de novo assembly using our downsampled dataset (it will take few minutes)
+```
 hifiasm -o SRR11434954.asm -t 4 20x_SRR11434954.sample.fastq.gz
+```
 
-
-#extracting FASTA sequence from GFA files (covert from gfa to fasta)
+Extract FASTA sequence from GFA files (covert from gfa to fasta)
+```
 awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.p_ctg.gfa | fold > SRR11434954.asm.p.fasta
-
 awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.a_ctg.gfa | fold > SRR11434954.asm.a.fasta
+```
 
-#The file SRR11434954.asm.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage (as shown during the lesson). You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
-
-
-
-
-
-## Visualization of the assembly using Bandage
-Let's download the Bandage tool to visualize the circular assembly done with Hifiasm. Download the tool in your computer https://rrwick.github.io/Bandage/, download locally your Hifiasm assembly and open it in Bandage
+The file SRR11434954.asm.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage. You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
+Download the tool in your computer, download locally your Hifiasm assembly and open it in Bandage
 
 
-
-
-
-##################################################################################
-####THIS PART WAS NOT DONE DURING THE PRACTICAL LESSON
-##BLAST alignment
-
-#we will create our own blast database using yeast reference sequence; download reference sequence from here https://www.ncbi.nlm.nih.gov/genome/?term=saccaromyces+cerevisiae
-#rename and decompress reference sequence
+# Optional: Blast alignment
+We will create our own blast database using yeast reference sequence; download reference sequence from here (as you did for E coli) https://www.ncbi.nlm.nih.gov/genome/?term=saccaromyces+cerevisiae
+Rename and extract reference sequence:
+```
 mv GCF_000146045.2_R64_genomic.fna.gz yeast_genomic.fna.gz 
 gunzip yeast_genomic.fna.gz
-
-#make blast database
+```
+Make blast database
+```
 makeblastdb -in yeast_genomic.fna -parse_seqids -dbtype nucl 
-
-#download Alk1 yeast gene sequence and send it to a fasta file "alk1.fasta"
-#make blast alignment
-
+```
+Try to download Alk1 yeast gene sequence from NCBI (by looking within the gene database) and send it to a fasta file "alk1.fasta"
+Perform blast alignment:
+```
 blastn -outfmt 6 -query alk1.fasta -db yeast_genomic.fna
-
-#take a look at the different columns of the blast output:
+```
+Take a look at the different columns of the blast output:
 
 1.  qseqid      query or source (e.g., gene) sequence id
 
@@ -300,8 +306,5 @@ blastn -outfmt 6 -query alk1.fasta -db yeast_genomic.fna
 
 12.  bitscore    bit score (the required size of a sequence database in which the current match could be found just by chance. The bit-score is a log2 scaled and normalized raw-score)
 
-#this was pretty obvious as we used as query a gene taken from the yeast annotated genome. You can try building databases of a species of choice and then "blasting" gene sequences from other species to try and detect homologous genes if you have some time left.
-##################################################################################
-
-
+Here we used as query a gene taken from the yeast annotated genome (same species) as an example. You can try building databases of another species and then "blasting" gene sequences from those species to try and detect homologous genes if you have some time left.
 
