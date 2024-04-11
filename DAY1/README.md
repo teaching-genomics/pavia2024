@@ -27,7 +27,7 @@ most new computers will be 64! For Mac make sure you pick the right installer, e
 
 
 ### Install bowtie2
-Let's install a NGS read aligner (bowtie2), check out this webpage https://anaconda.org/bioconda/bowtie2
+Let's install a NGS read aligner (bowtie2)
 ```
 conda install -c bioconda bowtie2
 ```
@@ -62,7 +62,7 @@ conda install bioconda::freebayes
 conda install -c bioconda vcftools bcftools
 ```
 
-### Let's install rasusa tool (https://github.com/mbhall88/rasusa)
+### Let's install rasusa tool
 ```
 conda install -c bioconda rasusa
 ```
