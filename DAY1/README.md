@@ -212,7 +212,6 @@ bcftools view -H var_filtered.recode.vcf | wc -l #How many variants do we have l
 
 
 
-
 ##HiFi dataset
 #Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) and place them in our working directory
 
@@ -302,4 +301,6 @@ blastn -outfmt 6 -query alk1.fasta -db yeast_genomic.fna
 
 #this was pretty obvious as we used as query a gene taken from the yeast annotated genome. You can try building databases of a species of choice and then "blasting" gene sequences from other species to try and detect homologous genes if you have some time left.
 ##################################################################################
+
+
 
