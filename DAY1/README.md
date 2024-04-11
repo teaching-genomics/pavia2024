@@ -100,7 +100,7 @@ Retrieve E. coli reference genome (wget command and then paste the adress you ju
 wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
 ```
 
-## Gunzip the genome and rename it for brevity
+Gunzip the genome and rename it for brevity
 ```
 gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
 mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
@@ -193,7 +193,7 @@ bgzip var.vcf
 bcftools index var.vcf.gz
 ```
 
-# Let's dive more into the vcf fields 
+## Let's dive more into the vcf fields 
 ```
 bcftools view var.vcf.gz | grep -m 1 -A 1 "#CHROM" | cut -f 1-7     #to extract the first seven columns: what information do we have here?
 bcftools view -H var.vcf.gz | head -1 | cut -f 8 #now let's extract the info field for the first site in our vcf
@@ -205,7 +205,7 @@ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' var.vcf.gz | head #For ano
 bcftools view -H var.vcf.gz | wc -l   #How many variants are there? This command counts the lines referring to the genetic variants, excluding the header (remember the vcf has one variant per line, excluding the header)
 ```
 
-# Now let's try to calculate some vcf file statistics with vcftools
+## Now let's try to calculate some vcf file statistics with vcftools
 ```
 vcftools --gzvcf var.vcf.gz --depth #Calculate mean depth of coverage per individual (in this case we only have 1)
 vcftools --gzvcf var.vcf.gz --site-quality #Calculate quality for each site
