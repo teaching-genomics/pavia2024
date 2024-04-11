@@ -180,7 +180,7 @@ Now that you have the variant calling file from your alignment, you can try to v
 
 
 ## Now let's learn how to explore a vcf file using the command line
-Let's visualize the header of the file and learn some useful commands
+Let's visualize the header of the file and learn some useful commands  
 This command shows the file header; the header contains information on what has been done to the vcf
 ```
 bcftools view -h var.vcf  
@@ -224,7 +224,7 @@ plink --vcf joint.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:#
 For plotting, we'll have to switch to R studio...
 
 # HiFi dataset (alignment)
-Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) in our gitpod workspace
+Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) in our gitpod workspace.  
 Align Hifi reads to our reference (e_coli.fasta)
 ```
 minimap2 -ax map-hifi e_coli.fasta ccs.fq.gz > hifi_alignment.sam 
@@ -243,7 +243,7 @@ Now Try to load this HiFi alignment on IGV as you did before and compare it with
 
 
 # HiFi dataset (genome assembly)
-Now we will try to make a de novo assembly using our HiFi dataset. First, we will have to downsample our dataset to make the operation computationally feasible for use. We will use rasusa, a tool specifically designed to randomly subsample long-reads data
+Now we will try to make a de novo assembly using our HiFi dataset. First, we will have to downsample our dataset to make the operation computationally feasible for use. We will use rasusa, a tool specifically designed to randomly subsample long-reads data.  
 Subsample to 20x coverage
 ```
 rasusa --coverage 20 --genome-size 4641652b --input SRR11434954.sample.fastq.gz -o 20x_SRR11434954.sample.fastq.gz 
@@ -264,7 +264,7 @@ Download the tool in your computer, download locally your Hifiasm assembly and o
 
 
 # Optional: Blast alignment
-We will create our own blast database using yeast reference sequence; download reference sequence from here (as you did for E coli) https://www.ncbi.nlm.nih.gov/genome/?term=saccaromyces+cerevisiae
+We will create our own blast database using yeast reference sequence; download reference sequence from here (as you did for E coli) https://www.ncbi.nlm.nih.gov/genome/?term=saccaromyces+cerevisiae  
 Rename and extract reference sequence:
 ```
 mv GCF_000146045.2_R64_genomic.fna.gz yeast_genomic.fna.gz 
@@ -274,7 +274,7 @@ Make blast database
 ```
 makeblastdb -in yeast_genomic.fna -parse_seqids -dbtype nucl 
 ```
-Try to download Alk1 yeast gene sequence from NCBI (by looking within the gene database) and send it to a fasta file "alk1.fasta"
+Try to download Alk1 yeast gene sequence from NCBI (by looking within the gene database) and send it to a fasta file "alk1.fasta"  
 Perform blast alignment:
 ```
 blastn -outfmt 6 -query alk1.fasta -db yeast_genomic.fna
