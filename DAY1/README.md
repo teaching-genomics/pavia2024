@@ -227,7 +227,7 @@ For plotting, we'll have to switch to R studio...
 Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) in our gitpod workspace.  
 Align Hifi reads to our reference (e_coli.fasta)
 ```
-minimap2 -ax map-hifi e_coli.fasta ccs.fq.gz > hifi_alignment.sam 
+minimap2 -ax map-hifi e_coli.fasta SRR11434954.sample.fastq.gz > hifi_alignment.sam 
 ```
 Convert to bam
 ```
@@ -239,7 +239,7 @@ samtools sort hifi_alignment.bam -o sorted_hifi_alignment.bam -@ 4
 samtools index sorted_hifi_alignment.bam
 rm hifi_alignment.sam # we don't need the sam anymore
 ```
-Now Try to load this HiFi alignment on IGV as you did before and compare it with the alignment previously made with the Illumina dataset. What are the main differences? 
+Now try to load this HiFi alignment on IGV as you did before and compare it with the alignment previously made with the Illumina dataset. What are the main differences? 
 
 
 # HiFi dataset (genome assembly)
