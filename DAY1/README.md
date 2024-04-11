@@ -1,6 +1,6 @@
 # BGPAV 2024 Day1
 
-## Installation
+## Installation (use this if you want to replicate the practical but installing the tools yourself in your machine)
 
 ### Install needed software 
 
@@ -82,6 +82,7 @@ conda install -c bioconda blast
 conda install -c bioconda hifiasm
 ```
 
+## Practical in gitpod (use this during the course practical; no need to install anything)
 
 
 ## Reference genome
@@ -131,7 +132,7 @@ We will assess raw read quality using 'rdeval', a very useful software to analys
 rdeval SRR10428014_1.fastq 4641652   #the command needs the genome size in bp
 rdeval SRR10428014_2.fastq 4641652   #the command needs the genome size in bp
 ```
-Anayze the output trying to interpret the results according to what you learned during the theoretical lessons about NGS.
+Anayze the output trying to interpret the results according to what you learned during the theoretical lessons about NGS. 
 And now let's align the reads to our reference. First we need to index the reference to make it faster to access:
 ```
 bowtie2-build e_coli.fasta ecoli
@@ -163,7 +164,6 @@ There is also an online version in case you don't want to download it locally (h
 Run IGV and load the files to inspect them. You can also load the genome annotation as an additional track in the GFF format (available here https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.gff.gz)
 
 
-
 ## Variant calling
 Let's check freebayes, the variant caller we will use, works by opening the help page
 ```
@@ -176,7 +176,7 @@ freebayes -f e_coli.fasta -p 1 sorted_alignment.bam > var.vcf
 Now that you have the variant calling file from your alignment, you can try to visualize it in IGV by loading it as you did before for the alignment file.
 
 
-##Now let's learn how to explore a vcf file using the command line
+## Now let's learn how to explore a vcf file using the command line
 Let's visualize the header of the file and learn some useful commands
 This command shows the file header; the header contains information on what has been done to the vcf
 ```
@@ -193,7 +193,7 @@ bgzip var.vcf
 bcftools index var.vcf.gz
 ```
 
-#Let's dive more into the vcf fields 
+# Let's dive more into the vcf fields 
 ```
 bcftools view var.vcf.gz | grep -m 1 -A 1 "#CHROM" | cut -f 1-7     #to extract the first seven columns: what information do we have here?
 bcftools view -H var.vcf.gz | head -1 | cut -f 8 #now let's extract the info field for the first site in our vcf
@@ -205,7 +205,7 @@ bcftools query -f '%CHROM\t%POS\t%REF\t%ALT[\t%GT]\n' var.vcf.gz | head #For ano
 bcftools view -H var.vcf.gz | wc -l   #How many variants are there? This command counts the lines referring to the genetic variants, excluding the header (remember the vcf has one variant per line, excluding the header)
 ```
 
-#Now let's try to calculate some vcf file statistics with vcftools
+# Now let's try to calculate some vcf file statistics with vcftools
 ```
 vcftools --gzvcf var.vcf.gz --depth #Calculate mean depth of coverage per individual (in this case we only have 1)
 vcftools --gzvcf var.vcf.gz --site-quality #Calculate quality for each site
@@ -215,22 +215,17 @@ bcftools view -H var_filtered.recode.vcf | wc -l #How many variants do we have l
 
 
 
-##HiFi dataset
-#Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) and place them in our working directory
+# HiFi dataset
+Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) in our gitpod workspace
 
 
-##################################################################################
-####THIS PART WAS NOT DONE DURING THE PRACTICAL LESSON
-#Download pbmm2, the aligner for Pacbio HiFi reads
+# Align Hifi reads to our reference (e_coli.fasta)
 
-conda install -c bioconda pbmm2
+minimap2 -ax map-hifi e_coli.fasta ccs.fq.gz > hifi_alignment.sam 
 
-#Align Hifi reads to our reference (e_coli.fasta) and directly sort the alignment. Note that for this particular step indexing the reference is optional (https://github.com/PacificBiosciences/pbmm2)
+# Try to load this HiFi alignment on IGV and compare it with the alignment previously made with the Illumina dataset. What are the main differences? 
 
-pbmm2 align e_coli.fasta SRR11434954.sample.fastq.gz sampleHifi.bam --sort --log-level INFO
 
-#Try to load this HiFi alignment on IGV and compare it with the alignment previously made with the Illumina dataset. What are the main differences? 
-##################################################################################
 
 
 #Now we will try to make a de novo assembly using our HiFi dataset. First, we will have to downsample our dataset to make the operation computationally feasible for use. We will use rasusa, a tool specifically designed to randomly subsample long-reads data
@@ -238,9 +233,6 @@ pbmm2 align e_coli.fasta SRR11434954.sample.fastq.gz sampleHifi.bam --sort --log
 
 #subsample to 20x coverage
 rasusa --coverage 20 --genome-size 4641652b --input SRR11434954.sample.fastq.gz -o 20x_SRR11434954.sample.fastq.gz 
-
-#for de novo genome assembly, we will use HiFiasm, a de novo genome assembler specific fo HiFi reads (https://hifiasm.readthedocs.io/en/latest/index.html)
-#let's download it
 
 
 #perform de novo assembly using our downsampled dataset (it will take few minutes)
