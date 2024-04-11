@@ -47,33 +47,48 @@ Let's install the dedicated tool from NCBI-SRA for downloading data
 conda install -c bioconda sra-tools=3.0
 ```
 
-###install fastqc
+### Install fastqc
 Install and check it works by exploring the help page:
 ```
 conda install -c bioconda fastqc
 fastqc -h | less
 ```
 
-###install samtools
+### Install samtools
 Let's install the software samtools
 ```
 conda install -c bioconda "samtools>=1.10"
 ```
 
-###install freebayes
+### Install freebayes
 Let's install the freebayes variant caller
 ```
 conda install bioconda::freebayes
 ```
 
-###Let's install vcftools and bcftools, both very useful and fast programs for handling vcf files
+### Let's install vcftools and bcftools, both very useful and fast programs for handling vcf files
 ```
 conda install -c bioconda vcftools bcftools
 ```
 
-###Let's install rasusa tool (https://github.com/mbhall88/rasusa)
+### Let's install rasusa tool (https://github.com/mbhall88/rasusa)
 ```
 conda install -c bioconda rasusa
+```
+
+### Let's install minimap2 
+```
+conda install biobuilds::minimap2
+```
+
+### Let's install blast
+```
+conda install -c bioconda blast
+```
+
+### Let's install hifiasm
+```
+conda install -c bioconda hifiasm
 ```
 
 
@@ -82,12 +97,13 @@ conda install -c bioconda rasusa
 1. go to https://www.ncbi.nlm.nih.gov/
 2. search for 'e coli' (without quotes) 
 3. under the 'Genomes' tab, click 'Genome'
-4. select one of the first three results
-5. under 'Reference genome:' > RefSeq click on the reference ID (e.g. NC_011750.1)
-6. upper right corner click 'Send to:', select 'Complete Record', 'File' and Format 'FASTA' then 'Create File'
-7. create a working directory on your desktop and place the downloaded file in the folder. You can do so using the GUI or with the terminal (see below)
+4. select the first result
+5. under 'NCBI RefSeq assembly' > RefSeq click on Actions--> see more files on ftp
+6. Right click on the file 'GCF_000005845.2_ASM584v2_genomic.fna.gz' and select "copia indirizzo link" / "copy link address"
 
-Retrieve E. coli reference genome
+
+Retrieve E. coli reference genome (wget command and then paste the adress you just copied) in the gitpod workspace
+
 ```
 wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
 ```
@@ -98,15 +114,13 @@ gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
 mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
 ```
 
-## Genome assembly
-
 
 ## Alignment
-now let's download the reads:
+now let's download some short reads to align to the reference genome we just downloaded:
 ```
 fasterq-dump SRR10428014
 ```
-fasterq-dump is a tool to download seequences from NCBI-SRA. Sometimes it gives errors of connection.
+fasterq-dump is a tool to download seequences from NCBI-SRA.
 Let's explore the fastq format. How can we visualize the first reads:
 ```
 cat SRR10428014_1.fastq | head -4
@@ -120,17 +134,13 @@ And divide by four:
 ```
 echo $(( 5270084 / 4 ))
 ```
-We will assess raw read quality using 'rdeval' and 'fastqc', a very useful software to analyse raw data.
-First make a folder in your working directory for quality control outputting
+We will assess raw read quality using 'rdeval', a very useful software to analyse raw data.
+
 ```
-mkdir QC
+rdeval SRR10428014_1.fastq 4641652   #the command needs the genome size in bp
+rdeval SRR10428014_2.fastq 4641652   #the command needs the genome size in bp
 ```
-Run fastqc on fastq files and output the result in the proper QC folder (it shouldn't take long):
-```
-fastqc SRR10428014_1.fastq -o QC
-fastqc SRR10428014_2.fastq -o QC
-```
-To analyze fastqc output, open the html file and try to interpret the results according to what you learned during the theoretical lessons about NGS. Are your data of enough good quality to proceed with the analysis?
+Anayze the output trying to interpret the results according to what you learned during the theoretical lessons about NGS.
 And now let's align the reads to our reference. First we need to index the reference to make it faster to access:
 ```
 bowtie2-build e_coli.fasta ecoli
@@ -155,20 +165,22 @@ Let's also index the reference fasta file using samtools, so that the fasta can 
 ```
 samtools faidx e_coli.fasta
 ```
+
+## Visualization in IGV
 Let's download IGV viewer to look inside the alignment https://software.broadinstitute.org/software/igv/download (download the version with java included; choose a version appropriate for your OS)
 There is also an online version in case you don't want to download it locally (https://igv.org/app/)
-Run IGV and load the files to inspect them. You can also load the genome annotation as an additional track in the GFF format (available here https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/)
+Run IGV and load the files to inspect them. You can also load the genome annotation as an additional track in the GFF format (available here https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.gff.gz)
 
 
 
 ## Variant calling
-Let's check freebayes works by opening the help page
+Let's check freebayes, the variant caller we will use, works by opening the help page
 ```
-./freebayes -h
+freebayes -h
 ```
 Let's perform the variant calling using the alignment generated before
 ```
-./freebayes -f e_coli.fasta -p 1 sorted_alignment.bam > var.vcf
+freebayes -f e_coli.fasta -p 1 sorted_alignment.bam > var.vcf
 ```
 Now that you have the variant calling file from your alignment, you can try to visualize it in IGV by loading it as you did before for the alignment file.
 
@@ -239,7 +251,6 @@ rasusa --coverage 20 --genome-size 4641652b --input SRR11434954.sample.fastq.gz 
 #for de novo genome assembly, we will use HiFiasm, a de novo genome assembler specific fo HiFi reads (https://hifiasm.readthedocs.io/en/latest/index.html)
 #let's download it
 
-conda install -c bioconda hifiasm
 
 #perform de novo assembly using our downsampled dataset (it will take few minutes)
 hifiasm -o SRR11434954.asm -t 4 20x_SRR11434954.sample.fastq.gz
@@ -253,12 +264,19 @@ awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.a_ctg.gfa | fold > SRR11434954.asm
 #The file SRR11434954.asm.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage (as shown during the lesson). You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
 
 
+
+
+
+## Visualization of the assembly using Bandage
+Let's download the Bandage tool to visualize the circular assembly done with Hifiasm. Download the tool in your computer https://rrwick.github.io/Bandage/, download locally your Hifiasm assembly and open it in Bandage
+
+
+
+
+
 ##################################################################################
 ####THIS PART WAS NOT DONE DURING THE PRACTICAL LESSON
 ##BLAST alignment
-#download blast using conda
-
-conda install -c bioconda blast
 
 #we will create our own blast database using yeast reference sequence; download reference sequence from here https://www.ncbi.nlm.nih.gov/genome/?term=saccaromyces+cerevisiae
 #rename and decompress reference sequence
