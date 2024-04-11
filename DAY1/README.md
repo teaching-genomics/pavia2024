@@ -108,12 +108,11 @@ mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
 
 
 ## Alignment
-Now let's download some short reads to align to the reference genome we just downloaded
+Now let's download some short reads to align to the reference genome we just downloaded.  
 The idea is that everyone should pick a different sample
 ```
-fasterq-dump SRR10428014
+fasterq-dump SRR10428014  #fasterq-dump is a tool to download seequences from NCBI-SRA
 ```
-fasterq-dump is a tool to download seequences from NCBI-SRA.
 Let's explore the fastq format. How can we visualize the first reads:
 ```
 cat SRR10428014_1.fastq | head -4
