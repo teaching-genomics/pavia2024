@@ -113,7 +113,7 @@ The idea is that everyone should pick a different sample
 ```
 fasterq-dump SRR10428014  #fasterq-dump is a tool to download seequences from NCBI-SRA
 ```
-Let's explore the fastq format. How can we visualize the first reads:
+Let's explore the fastq format. How can we visualize the first read?
 ```
 cat SRR10428014_1.fastq | head -4
 ```
@@ -168,7 +168,7 @@ Run IGV and load the files to inspect them. You can also load the genome annotat
 
 
 ## Variant calling
-Let's check freebayes, the variant caller we will use, works by opening the help page
+Let's check that freebayes, the variant caller we will use, works by opening the help page
 ```
 freebayes -h
 ```
