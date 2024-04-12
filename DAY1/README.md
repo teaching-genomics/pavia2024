@@ -184,6 +184,13 @@ freebayes -f e_coli.fasta -p 1 sorted_alignment.bam > var.vcf
 ```
 Now that you have the variant calling file from your alignment, you can try to visualize it in IGV by loading it as you did before for the alignment file.
 
+## How to change sample name in the vcf file
+Normally, sample name is assigned during alignment, where you can assign a sample ID for the read groups deriving from the same sample.  
+Since we skipped this step of sample assignment in our alignment, for the tutorial purposes you can just assign a sample name later in the vcf using bcftools reheader like this:  
+```
+bcftools reheader --samples new_sample_name -o name_surname.vcf.gz var.vcf.gz  ### new_sample_name is a simple text file containing the new sample name to give (you can use your name_surname; you can create it using vim/nano as showed in classroom or also in a notebook and then transferring it to gitpod workspace); -o defines the name of the output file that will be generated (with the new sample name); the last part of the command is the input file (the vcf file obtained before using freebayes)
+```
+
 
 ## Now let's learn how to explore a vcf file using the command line
 Let's visualize the header of the file and learn some useful commands  
