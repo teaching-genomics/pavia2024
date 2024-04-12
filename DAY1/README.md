@@ -106,6 +106,12 @@ gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
 mv GCF_000005845.2_ASM584v2_genomic.fna e_coli.fasta
 ```
 
+Let's use gfastast to evaluate the reference 
+
+```
+gfastats e_coli.fasta 4641652
+```
+
 
 ## Alignment
 Now let's download some short reads to align to the reference genome we just downloaded.  
