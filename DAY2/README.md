@@ -56,14 +56,14 @@ We can use grep to remove the path lines:
 cat tiny.gfa | grep -v ^P | vg view -dp - | dot -Tpdf -o tiny.no_path.pdf
 ```
 Try to remove the nodes and/or the edges from the GFA file and visualize them. What happens?  
-Another tool for visualizing (not too big) graphs is Bandage. It supports graphs in GFA format. Try to visualize the graph by uploading the graph locally in Bandage (previously installed in your machine) 
+Another tool for visualizing (not too big) graphs is Bandage. It supports graphs in GFA format. Try to visualize the graph by uploading the graph locally in Bandage (previously installed in your machine)  
 Let’s step up to a slightly bigger example.  
 ```
 ln -s ~/vg/test/1mb1kgp
 ```
 This directory contains 1Mbp of 1000 Genomes data for chr20:1000000-2000000. As for the tiny example, let’s’ build one linear graph that only contains the reference sequence and one graph that additionally encodes the known sequence variation. The reference sequence is contained in 1mb1kgp/z.fa, and the variation is contained in 1mb1kgp/z.vcf.gz. Make a reference-only graph named ref.vg, and a graph with variation named z.vg. Look at the previous examples to figure out the command.  
 Take a look at the length of the graph, and the number of nodes/edges using vg stats.  
-You might be tempted to visualize these graphs (and of course you are welcome to try), but they are sufficiently big already that they can run out of memory and crash. Try to load the graph in Bandage too (it will be slow). Try to generate a PNG image with Bandage (take a look at the Bandage -h output).  
+You might be tempted to visualize these graphs (and of course you are welcome to try), but they are sufficiently big already that ```neato``` can run out of memory and crash. Try to load the graph in Bandage too (it will be slow). Try to generate a PNG image with Bandage (take a look at the Bandage -h output).  
 A set of pairwise alignments implies a variation graph, so pangenome graphs can be obtained from alignments too. Use minimap2 and seqwish to build graphs from the HLA gene haplotypes  
 ```
 ln -s ~/vg/test/GRCh38_alts/FASTA/HLA/
@@ -75,7 +75,7 @@ odgi viz -i DRB1-3123.og -o DRB1-3123.png -x 2000
 Use Bandage to visualize these graphs you just built.  
 
 ## Pangenome graph construction using pggb
-In this section we will build HLA pangenome graphs  
+In this section we will build HLA pangenome graphs using pggb  
 ```
 mkdir day1_pggb
 cd day1_pggb
