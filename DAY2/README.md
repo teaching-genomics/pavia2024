@@ -10,148 +10,25 @@ Run it without parameters to get information on its usage
 ```
 vg construct
 ```
-Let’s start by constructing a graph from just one artificial sequence. This will create a graph that just consists of a linear chain of nodes, each with 32 characters.
+Let’s start by constructing a graph from one single sequences. This will create a graph that just consists of a linear chain of nodes, each with 32 characters.
 ```
-vg construct -r tiny/tiny.fa -m 32 > tiny.ref.vg
+vg construct -r data/tiny.fa -m 32 > tiny.ref.vg
 ```
 The -m flag tells vg to put at most 32 characters into each graph node (you might want to run it with different values and observe the different results).  
-To visualize a graph, you can use vg view. As default, vg view will output a graph in GFA format. By adding -j or -d, you can generate JSON or DOT output.  
+To visualize a graph, you can use vg view. As default, vg view will output a graph in GFA format.  
 ```
 vg view tiny.ref.vg
-vg view -j tiny.ref.vg
-vg view -d tiny.ref.vg
 ```
-To work with the JSON output, you can use the tool jq. To get all sequences in the graph, for instance, try
+Now try to vary the parameter passed to -m of vg construct and visualize the result.  
+Now let’s build a new graph with some variants built into it. First, take a look at at data/tiny.vcf, which contains 2 SNV variants in VCF format.
 ```
-vg view -j tiny.ref.vg | jq '.node[].sequence'
+vg construct -r data/tiny.fa -v data/tiny.vcf.gz -m 1024 > tiny.vg  ###we set -m at his maximum value (1024) to avoid graph splitting
 ```
-Next, we will use graphviz to layout the graph representation in DOT format
-```
-vg view -d tiny.ref.vg | dot -Tpdf -o tiny.ref.pdf
-```
-View the PDF and compare it to the input sequence. Now vary the parameter passed to -m of vg construct and visualize the result.  
-Now let’s build a new graph with some variants built into it. First, take a look at at tiny/tiny.vcf.gz, which contains variants in (gzipped) VCF format.
-```
-vg construct -r tiny/tiny.fa -v tiny/tiny.vcf.gz -m 32 > tiny.vg
-```
-Are there any warnings in the output? If yes, what do they indicate? Visualize the resulting graph.  
-Ok, that’s nice, but you might wonder which sequence of nodes actually corresponds to the sequence (tiny.fa) you started from? To keep track of that, vg adds a path to the graph. Let’s add this path to the visualization.  
-```
-vg view -dp tiny.vg | dot -Tpdf -o tiny.pdf
-```
-The -S option removes the sequence labels and only plots node IDs.
-
-vg view -dpS tiny.vg | dot -Tpdf -o tiny.pdf
-Another tool that comes with the graphviz package is Neato. It creates force-directed layouts of a graph.
-```
-vg view -dpS tiny.vg | neato -Tpdf -o tiny.pdf
-```
-It’s also possible to read the graph in different formats. For instance, we can write the graph in GFA, modify it using text processing tools, and read it back in:  
-```
-vg view tiny.vg > tiny.gfa
-```
-The GFA file has three elements. S records represent nodes, L records represent edges, and P records represent paths.  
-We can use grep to remove the path lines:  
-```
-cat tiny.gfa | grep -v ^P | vg view -dp - | dot -Tpdf -o tiny.no_path.pdf
-```
-Try to remove the nodes and/or the edges from the GFA file and visualize them. What happens?  
-Another tool for visualizing (not too big) graphs is Bandage. It supports graphs in GFA format. Try to visualize the graph by uploading the graph locally in Bandage (previously installed in your machine)  
-Let’s step up to a slightly bigger example.  
-```
-ln -s ~/vg/test/1mb1kgp
-```
-This directory contains 1Mbp of 1000 Genomes data for chr20:1000000-2000000. As for the tiny example, let’s’ build one linear graph that only contains the reference sequence and one graph that additionally encodes the known sequence variation. The reference sequence is contained in 1mb1kgp/z.fa, and the variation is contained in 1mb1kgp/z.vcf.gz. Make a reference-only graph named ref.vg, and a graph with variation named z.vg. Look at the previous examples to figure out the command.  
-Take a look at the length of the graph, and the number of nodes/edges using vg stats.  
-You might be tempted to visualize these graphs (and of course you are welcome to try), but they are sufficiently big already that ```neato``` can run out of memory and crash. Try to load the graph in Bandage too (it will be slow). Try to generate a PNG image with Bandage (take a look at the Bandage -h output).  
-A set of pairwise alignments implies a variation graph, so pangenome graphs can be obtained from alignments too. Use minimap2 and seqwish to build graphs from the HLA gene haplotypes  
-```
-ln -s ~/vg/test/GRCh38_alts/FASTA/HLA/
-minimap2 -c -x asm20 -X -t 8 HLA/DRB1-3123.fa HLA/DRB1-3123.fa > DRB1-3123.paf
-seqwish -s HLA/DRB1-3123.fa -p DRB1-3123.paf -g DRB1-3123.gfa
-odgi build -g DRB1-3123.gfa -o - | odgi sort -i - -o DRB1-3123.og
-odgi viz -i DRB1-3123.og -o DRB1-3123.png -x 2000
-```
-Use Bandage to visualize these graphs you just built.  
-
-## Pangenome graph construction using pggb
-In this section we will build HLA pangenome graphs using pggb  
-```
-mkdir day1_pggb
-cd day1_pggb
-ln -s ~/pggb/data
-```
-The human leukocyte antigen (HLA) system is a complex of genes on chromosome 6 in humans which encode cell-surface proteins responsible for the regulation of the immune system.  
-Let’s build a pangenome graph from a collection of sequences of the DRB1-3123 gene:  
-```
-pggb -i data/HLA/DRB1-3123.fa.gz -n 12 -t 8 -o out_DRB1_3123
-```
-Run pggb without parameters to get information on the meaning of each parameter:  
-```
-pggb
-```
-Take a look at the files in the out_DRB1_3123 folder. Visualize the graph with Bandage.  
-Why did we specify -n 12?  
-How many alignments were executed during the pairwise alignment (take a look at the PAF output)? Visualize the alignments:  
-```
-cd out_DRB1_3123
-~/wfmash/scripts/paf2dotplot png large *paf
-cd ..
-```
-Use odgi stats to obtain the graph length, and the number of nodes, edges, and paths. Do you think the resulting pangenome graph represents the input sequences well? Check the length and the number of the input sequences to answer this question.  
-How many blocks were selected and ‘smoothed’ during the two rounds of graph normalization (take a look at the *.log file to answer this question)?  
-Try building the same pangenome graph by specifying a lower percent identity (-p 95 by default):  
-```
-pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 12 -t 8 -o out2_DRB1_3123
-```
-Check graph statistics. Does this pangenome graph represent better or worse the input sequences than the previously produced graph?  
-Try to decrease the number of mappings to reteain for each segment:  
-```
-pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 6 -t 8 -o out3_DRB1_3123
-```
-How does it affect the graph?  
-Try to increase the target sequence length for the partial order alignment (POA) problem (-G 4001,4507 by default):  
-```
-pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 12 -t 8 -G 12000,13000 -o out4_DRB1_3123
-```
-How is this changing the runtime and the memory usage? How is this affecting graph statistics? How many blocks were selected and ‘smoothed’ during the two rounds of graph normalization?  
-Try 1, 3 or 4 rounds of normalization (for example,by specifying -G 4001, -G 4001,4507,4547, or -G 4001,4507,4547, 4999). How does this affect graph statistics?  
-Take the second pggb run and try to increase the segment length (-s 10000 by default):  
-```
-pggb -i data/HLA/DRB1-3123.fa.gz -s 20000 -p 90 -n 12 -t 8 -o out5_DRB1_3123
-```
-How is this affecting graph statistics? Why?  
-pggb produces intermediate graphs during the process. Let’s keep all of them:  
-```
-pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 12 -t 8 --keep-temp-files -o out2_DRB1_3123_keep_intermediate_graphs
-```
-What does the file with name ending with .seqwish.gfa contain? and what about the file with name ending with .smooth.1.gfa? Take a look at the graph statistics of all the GFA files in the out2_DRB1_3123_keep_intermediate_graphs folder.  
-Choose another HLA gene from the data folder and explore how the statistics of the resulting graph change as s, p, n change. Produce scatter plots where on the x-axis there are the tested values of one of the pggb parameters (s, p, or n) and on the y-axis one of the graph statistics (length, number of nodes, or number of edges). You can do that using the final graph and/or the intermediate ones.  
-Now we will try to build LPA pangenome graphs.  
-Lipoprotein(a) (LPA) is a low-density lipoprotein variant containing a protein called apolipoprotein(a). Genetic and epidemiological studies have identified lipoprotein(a) as a risk factor for atherosclerosis and related diseases, such as coronary heart disease and stroke.  
-Try to make LPA pangenome graphs. The input sequences are in data/LPA/LPA.fa.gz. Sequences in this locus have a peculiarity: which one? Hint: visualize the alignments and take a look at the graph layout (with Bandage and/or in the .draw_multiqc.png files).  
+Visualize the resulting graph in Bandage.  
 
 ## Saccharomyces cerevisiae pangenome graphs construction
-Let's create a directory to work on for this tutorial:  
-```
-cd ~
-mkdir day3_yeast
-cd day3_yeast
-```
-Download 7 Saccharomyces cerevisiae assemblies (Yue et al., 2016) from the Yeast Population Reference Panel (YPRP) plus the SGD reference:
-```
-mkdir assemblies
-cd assemblies
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/DBVPG6044.fa.gz
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/DBVPG6765.fa.gz
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/S288C.fa.gz
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/SGDref.fa.gz
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/SK1.fa.gz
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/UWOPS034614.fa.gz
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/Y12.fa.gz
-wget -c http://hypervolu.me/~guarracino/CPANG22/yeast/YPS128.fa.gz
-```
-Rename the sequences according to the PanSN-spec specification, using fastix. The sequence names have to follow such a scheme:  
+In your workspace you will find  7 Saccharomyces cerevisiae assemblies (Yue et al., 2016) from the Yeast Population Reference Panel (YPRP) plus the SGD reference.  
+Before constructing the pangenome graph, we need to rename the sequences according to the PanSN-spec specification, using ```fastix```. The sequence names have to follow such a scheme:  
 ```
 DBVPG6044#1#chrI
 DBVPG6044#1#chrII
@@ -163,11 +40,22 @@ SGDref#1#chrI
 SGDref#1#chrII
 ...
 ```
-Put all sequences in a single FASTA file called scerevisiae8.fasta. Compress such a file with bgzip and index it:  
+To add the right prefix to all assemblies and concatenate all sequences in a single FASTA, you can use this command:
 ```
-bgzip -@ 4 scerevisiae8.fasta
-samtools faidx scerevisiae8.fasta.gz
+for file in *gz; do fastix -p "${file%.fa.gz}#1#" <(zcat $file) >> all.fa; done
 ```
+Index the fasta file:  
+```
+samtools faidx all.fa
+```
+Let's create a folder to store our graphs:
+```
+mkdir graphs
+```
+
+
+
+
 pggb exposes parameters that allow users to influence the structure of the graph that will represents the input sequences. In particular, reducing the mapping identity (-p parameter) increases the sensitivity of the alignment, leading to more compressed graphs. It is recommended to change this parameter depending on how divergent are the input sequences.  
 Assuming we will work with one chromosome at a time, we estimate the sequence divergence for each set of chromosomes. To partition the sequences by chromosome, execute:  
 ```
@@ -239,6 +127,82 @@ python3 ~/git/pggb/scripts/net2communities.py \
 ```
 Take a look at the scerevisiae8.mapping.paf.edges.list.txt.communities.pdf file.  
 Write a little script that take the *.community.*.txt files in input and create the corresponding FASTA files, ready to be input to pggb. Run pggb on the communities with multiple chromosomes and compare the results (layout and variants) from the previous activities.  
+
+
+
+
+
+
+
+
+
+A set of pairwise alignments implies a variation graph, so pangenome graphs can be obtained from alignments too. Use minimap2 and seqwish to build graphs from the HLA gene haplotypes  
+```
+ln -s ~/vg/test/GRCh38_alts/FASTA/HLA/
+minimap2 -c -x asm20 -X -t 8 HLA/DRB1-3123.fa HLA/DRB1-3123.fa > DRB1-3123.paf
+seqwish -s HLA/DRB1-3123.fa -p DRB1-3123.paf -g DRB1-3123.gfa
+odgi build -g DRB1-3123.gfa -o - | odgi sort -i - -o DRB1-3123.og
+odgi viz -i DRB1-3123.og -o DRB1-3123.png -x 2000
+```
+Use Bandage to visualize these graphs you just built.  
+
+## Pangenome graph construction using pggb
+In this section we will build HLA pangenome graphs using pggb  
+```
+mkdir day1_pggb
+cd day1_pggb
+ln -s ~/pggb/data
+```
+The human leukocyte antigen (HLA) system is a complex of genes on chromosome 6 in humans which encode cell-surface proteins responsible for the regulation of the immune system.  
+Let’s build a pangenome graph from a collection of sequences of the DRB1-3123 gene:  
+```
+pggb -i data/HLA/DRB1-3123.fa.gz -n 12 -t 8 -o out_DRB1_3123
+```
+Run pggb without parameters to get information on the meaning of each parameter:  
+```
+pggb
+```
+Take a look at the files in the out_DRB1_3123 folder. Visualize the graph with Bandage.  
+Why did we specify -n 12?  
+How many alignments were executed during the pairwise alignment (take a look at the PAF output)? Visualize the alignments:  
+```
+cd out_DRB1_3123
+~/wfmash/scripts/paf2dotplot png large *paf
+cd ..
+```
+Use odgi stats to obtain the graph length, and the number of nodes, edges, and paths. Do you think the resulting pangenome graph represents the input sequences well? Check the length and the number of the input sequences to answer this question.  
+How many blocks were selected and ‘smoothed’ during the two rounds of graph normalization (take a look at the *.log file to answer this question)?  
+Try building the same pangenome graph by specifying a lower percent identity (-p 95 by default):  
+```
+pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 12 -t 8 -o out2_DRB1_3123
+```
+Check graph statistics. Does this pangenome graph represent better or worse the input sequences than the previously produced graph?  
+Try to decrease the number of mappings to reteain for each segment:  
+```
+pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 6 -t 8 -o out3_DRB1_3123
+```
+How does it affect the graph?  
+Try to increase the target sequence length for the partial order alignment (POA) problem (-G 4001,4507 by default):  
+```
+pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 12 -t 8 -G 12000,13000 -o out4_DRB1_3123
+```
+How is this changing the runtime and the memory usage? How is this affecting graph statistics? How many blocks were selected and ‘smoothed’ during the two rounds of graph normalization?  
+Try 1, 3 or 4 rounds of normalization (for example,by specifying -G 4001, -G 4001,4507,4547, or -G 4001,4507,4547, 4999). How does this affect graph statistics?  
+Take the second pggb run and try to increase the segment length (-s 10000 by default):  
+```
+pggb -i data/HLA/DRB1-3123.fa.gz -s 20000 -p 90 -n 12 -t 8 -o out5_DRB1_3123
+```
+How is this affecting graph statistics? Why?  
+pggb produces intermediate graphs during the process. Let’s keep all of them:  
+```
+pggb -i data/HLA/DRB1-3123.fa.gz -p 90 -n 12 -t 8 --keep-temp-files -o out2_DRB1_3123_keep_intermediate_graphs
+```
+What does the file with name ending with .seqwish.gfa contain? and what about the file with name ending with .smooth.1.gfa? Take a look at the graph statistics of all the GFA files in the out2_DRB1_3123_keep_intermediate_graphs folder.  
+Choose another HLA gene from the data folder and explore how the statistics of the resulting graph change as s, p, n change. Produce scatter plots where on the x-axis there are the tested values of one of the pggb parameters (s, p, or n) and on the y-axis one of the graph statistics (length, number of nodes, or number of edges). You can do that using the final graph and/or the intermediate ones.  
+Now we will try to build LPA pangenome graphs.  
+Lipoprotein(a) (LPA) is a low-density lipoprotein variant containing a protein called apolipoprotein(a). Genetic and epidemiological studies have identified lipoprotein(a) as a risk factor for atherosclerosis and related diseases, such as coronary heart disease and stroke.  
+Try to make LPA pangenome graphs. The input sequences are in data/LPA/LPA.fa.gz. Sequences in this locus have a peculiarity: which one? Hint: visualize the alignments and take a look at the graph layout (with Bandage and/or in the .draw_multiqc.png files).  
+
 
 ## Read mapping and variant calling
 ```
