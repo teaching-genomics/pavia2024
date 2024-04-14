@@ -7,5 +7,6 @@ tasks:
     cd /workspace
     export PATH=/workspace/pavia2024/bin:$PATH
     export PATH=/workspace/pavia2024/DAY2/bin:$PATH
+    export PATH=/workspace/pavia2024/DAY2/bin/pggb:$PATH
 
 workspaceLocation: "/workspace"
