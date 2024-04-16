@@ -277,7 +277,7 @@ gfastats SRR11434954.asm.bp.hap1.p_ctg.fasta
 ```
 
 The file SRR11434954.asm.bp.hap1.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage. You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
-Download the tool in your computer, download locally your Hifiasm assembly and open it in Bandage.
+Download the tool in your computer, download locally your Hifiasm assembly and open it in Bandage (remember to press "draw graph" after loading the gfa file).
 
 
 # Optional: Blast alignment
