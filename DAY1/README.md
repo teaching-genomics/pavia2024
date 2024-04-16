@@ -269,16 +269,14 @@ hifiasm -o SRR11434954.asm -t 4 20x_SRR11434954.sample.fastq.gz
 Extract FASTA sequence from GFA files (covert from gfa to fasta)
 ```
 awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.bp.hap1.p_ctg.gfa | fold > SRR11434954.asm.bp.hap1.p_ctg.fasta
-awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.bp.hap2.p_ctg.gfa | fold > SRR11434954.asm.bp.hap2.p_ctg.fasta
 ```
 
 Perform assembly evaluation using gfastats; you can also run it of the gfa, however the results will be different (why?)
 ```
 gfastats SRR11434954.asm.bp.hap1.p_ctg.fasta
-gfastats SRR11434954.asm.bp.hap2.p_ctg.fasta
 ```
 
-The files SRR11434954.asm.bp.hap1.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage. You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
+The file SRR11434954.asm.bp.hap1.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage. You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
 Download the tool in your computer, download locally your Hifiasm assembly and open it in Bandage.
 
 
