@@ -4,9 +4,10 @@ tasks:
 - name: Day1
   init: |
     chmod 755 /workspace/pavia2024/bin/*    
+  command: |
     cd /workspace
     export PATH=/workspace/pavia2024/bin:$PATH
     export PATH=/workspace/pavia2024/DAY2/bin:$PATH
     export PATH=/workspace/pavia2024/DAY2/bin/pggb:$PATH
-
+    
 workspaceLocation: "/workspace"
