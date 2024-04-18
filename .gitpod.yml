@@ -8,5 +8,6 @@ tasks:
     export PATH=/workspace/pavia2024/bin:$PATH
     export PATH=/workspace/pavia2024/DAY2/bin:$PATH
     export PATH=/workspace/pavia2024/DAY2/bin/pggb:$PATH
+    sudo apt install bc pigz
 
 workspaceLocation: "/workspace"
