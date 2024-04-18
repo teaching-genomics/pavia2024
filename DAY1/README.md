@@ -111,7 +111,7 @@ Let's use gfastast to evaluate the reference
 ```
 gfastats e_coli.fasta 4641652
 ```
-
+What information can you get about the assembly?
 
 ## Alignment
 Now let's download some short reads to align to the reference genome we just downloaded.  
@@ -132,7 +132,7 @@ And divide by four:
 ```
 echo $(( 5270084 / 4 ))
 ```
-We will assess raw read quality using 'rdeval', a very useful software to analyse raw data.
+We will assess raw read quality using rdeval, a very useful software to analyse raw data.
 
 ```
 rdeval SRR10428014_1.fastq 4641652   #the command needs the genome size in bp
@@ -234,7 +234,7 @@ The idea is that everyone sends us their vcf files, so we can merge them in a po
 ```
 plink --vcf joint.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out ecoli_pop
 ```
-For plotting, we'll have to switch to R studio...
+For plotting, we'll have to switch to R studio... (we'll show you the results after the practical)
 
 # HiFi dataset (alignment)
 Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) in our gitpod workspace.  
@@ -268,12 +268,18 @@ hifiasm -o SRR11434954.asm -t 4 20x_SRR11434954.sample.fastq.gz
 
 Extract FASTA sequence from GFA files (covert from gfa to fasta)
 ```
-awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.p_ctg.gfa | fold > SRR11434954.asm.p.fasta
-awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.a_ctg.gfa | fold > SRR11434954.asm.a.fasta
+awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.bp.r_utg.gfa | fold > SRR11434954.asm.bp.r_utg.fasta
+awk '/^S/{print ">"$2"\n"$3}' SRR11434954.asm.bp.hap1.p_ctg.gfa | fold > SRR11434954.asm.bp.hap1.p_ctg.fasta
 ```
 
-The file SRR11434954.asm.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage. You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
-Download the tool in your computer, download locally your Hifiasm assembly and open it in Bandage
+Perform assembly evaluation using gfastats; you can also run it of the gfa, however the results will be different (why?)
+```
+gfastats SRR11434954.asm.bp.r_utg.fasta
+gfastats SRR11434954.asm.bp.hap1.p_ctg.fasta
+```
+
+The files SRR11434954.asm.bp.r_utg.gfa and SRR11434954.asm.bp.hap1.p_ctg.gfa (not the fasta) can be visualized using the tool Bandage. You can download it from here https://rrwick.github.io/Bandage/ (choose a version appropriate for your OS).
+Download the tool in your computer, download locally your Hifiasm assembly and open it in Bandage (remember to press "draw graph" after loading the gfa file!).
 
 
 # Optional: Blast alignment

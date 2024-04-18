@@ -48,13 +48,21 @@ Index the fasta file:
 ```
 samtools faidx all.fa
 ```
-Let's create a folder to store our graphs:
+Let's extract mitogenomes. We will then generate some statistics and generate the fasta index:  
 ```
-mkdir graphs
+grep MT all.fa.fai | cut -f1 > mt.ls
+gfastats -i mt.ls all.fa -o all.mt.fa
+samtools faidx all.mt.fa
 ```
-
-
-
+We will generate pangenome graphs from mitoassemblies. Let's create a folder to store our graphs:
+```
+cd ../..
+mkdir -p graphs
+```
+Let's generate graphs
+```
+pggb -i data/ecoli/all.mt.fa -p 90 -n 8 -t 4 -o graphs/scerevisiae8.mt 
+```
 
 pggb exposes parameters that allow users to influence the structure of the graph that will represents the input sequences. In particular, reducing the mapping identity (-p parameter) increases the sensitivity of the alignment, leading to more compressed graphs. It is recommended to change this parameter depending on how divergent are the input sequences.  
 Assuming we will work with one chromosome at a time, we estimate the sequence divergence for each set of chromosomes. To partition the sequences by chromosome, execute:  

@@ -3,11 +3,11 @@ image: gitpod/workspace-base
 tasks:
 - name: Day1
   init: |
-    chmod 755 /workspace/pavia2024/bin/*    
+    chmod 755 /workspace/pavia2024/bin/*
+    sudo apt install bc pigz
+  command: |
     cd /workspace
     export PATH=/workspace/pavia2024/bin:$PATH
     export PATH=/workspace/pavia2024/DAY2/bin:$PATH
     export PATH=/workspace/pavia2024/DAY2/bin/pggb:$PATH
-    sudo apt install bc pigz
-
 workspaceLocation: "/workspace"
