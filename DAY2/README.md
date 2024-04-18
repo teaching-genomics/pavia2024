@@ -15,9 +15,10 @@ Let’s start by constructing a graph from one single sequences. This will creat
 vg construct -r data/tiny.fa -m 32 > tiny.ref.vg
 ```
 The -m flag tells vg to put at most 32 characters into each graph node (you might want to run it with different values and observe the different results).  
-To visualize a graph, you can use vg view. As default, vg view will output a graph in GFA format.  
+To visualize a graph, you can use vg view. As default, vg view will output a graph in GFA format, that you can visualize in Bandage.
 ```
 vg view tiny.ref.vg
+vg view tiny.ref.vg > tiny.ref.gfa
 ```
 Now try to vary the parameter passed to -m of vg construct and visualize the result.  
 Now let’s build a new graph with some variants built into it. First, take a look at at data/tiny.vcf, which contains 2 SNV variants in VCF format.
