@@ -4,6 +4,7 @@ tasks:
 - name: Day1
   init: |
     chmod 755 /workspace/pavia2024/bin/*
+    chmod 755 /workspace/pavia2024/DAY2/bin/*
     sudo apt install bc pigz
   command: |
     cd /workspace

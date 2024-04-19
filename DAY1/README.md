@@ -232,7 +232,7 @@ bcftools view -H var_filtered.recode.vcf | wc -l #How many variants do we have l
 # Optional: PCA using a vcf from different E. coli samples 
 The idea is that everyone sends us their vcf files, so we can merge them in a population vcf file and then we can show you how a PCA can be performed
 ```
-plink --vcf joint.vcf.gz --double-id --allow-extra-chr --set-missing-var-ids @:# --make-bed --pca --out ecoli_pop
+plink --vcf merged.vcf.gz --double-id --allow-extra-chr --make-bed --pca --out ecoli_pop
 ```
 For plotting, we'll have to switch to R studio... (we'll show you the results after the practical)
 
