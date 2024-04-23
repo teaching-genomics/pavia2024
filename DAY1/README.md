@@ -234,7 +234,7 @@ The idea is that everyone sends us their vcf files, so we can merge them in a po
 ```
 plink --vcf merged.vcf.gz --double-id --allow-extra-chr --make-bed --pca --out ecoli_pop
 ```
-For plotting, we'll have to switch to R studio... (we'll show you the results after the practical)
+For plotting, we'll have to switch to R studio... (we'll show you the results after the practical). You can find the R code in DAY1 folder.
 
 # HiFi dataset (alignment)
 Now let's download the e coli Hifi data (from the google drive link, in the appropriate subfolder) in our gitpod workspace.  
